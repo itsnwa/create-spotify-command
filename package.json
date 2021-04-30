@@ -1,0 +1,17 @@
+{
+  "name": "create-spotify-command",
+  "version": "1.0.0",
+  "description": "",
+  "main": "get-spotify-uri.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@sindresorhus/slugify": "^2.0.0",
+    "clipboardy": "^2.3.0"
+  }
+}
