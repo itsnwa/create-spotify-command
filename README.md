@@ -2,7 +2,9 @@
 
 ## Usage
 
-1. Download or clone this repo and add the folder to your script commands preferences
-2. Copy song, album or playlist URL (not uri) from Spotify
-3. Run `Create Spotify Command` and give the command a name (e.g. "Play Discover Weekly")
-4. ♫♫♫
+1. Download or clone this repo
+2. Run `npm install` in the directory
+3. Add the folder to your Raycast Script Commands Preferences
+4. Copy song, album or playlist URL (not uri) from Spotify
+5. Run `Create Spotify Command` and give the command a name (e.g. "Play Discover Weekly")
+6. ♫♫♫
