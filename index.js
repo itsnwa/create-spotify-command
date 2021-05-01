@@ -1,15 +1,16 @@
 #!/usr/bin/env node
 
 import fs from 'fs'
-import clipboardy from 'clipboardy'
-import slugify from '@sindresorhus/slugify'
+import { execSync } from "child_process"
 
 // Get Clipboard contents
-const URL = clipboardy.readSync();
+const URL = execSync('pbpaste').toString()
 
 // Filter out the information from URL
-const code = URL.split('/')[4].split('?')[0]
-const type = URL.split('/')[3]
+const code = URL?.split('/')[4].split('?')[0]
+const type = URL?.split('/')[3]
+
+console.log(`code: ${code}, type: ${type}`)
 
 const [commandName] = process.argv.slice(2)
 
@@ -34,16 +35,29 @@ property uri: "spotify:${type}:${code}"
 
 tell application "Spotify" to play track uri`
 
+// Slugify
+const slugify = (string) => {
+    const a = 'àáâäæãåāăąçćčđďèéêëēėęěğǵḧîïíīįìłḿñńǹňôöòóœøōõőṕŕřßśšşșťțûüùúūǘůűųẃẍÿýžźż·/_,:;'
+    const b = 'aaaaaaaaaacccddeeeeeeeegghiiiiiilmnnnnoooooooooprrsssssttuuuuuuuuuwxyyzzz------'
+    const p = new RegExp(a.split('').join('|'), 'g')
+
+    return string.toString().toLowerCase()
+        .replace(/\s+/g, '-') // Replace spaces with -
+        .replace(p, c => b.charAt(a.indexOf(c))) // Replace special characters
+        .replace(/&/g, '-and-') // Replace & with 'and'
+        .replace(/[^\w\-]+/g, '') // Remove all non-word characters
+        .replace(/\-\-+/g, '-') // Replace multiple - with single -
+        .replace(/^-+/, '') // Trim - from start of text
+        .replace(/-+$/, '') // Trim - from end of text
+}
+
 // Write script to disk
-if (!commandName) {
-    console.log("Missing Spotify Command Name")
-} else if (!type || !code) {
-    console.log("Copy a Spotify URL before running this command")
+if (!/track|album|playlist/.test(type)) {
+    console.log("Could not find Spotify URL in clipboard")
 } else {
     fs.writeFileSync(`./${slugify(commandName)}.applescript`, scriptContent)
     console.log(`${commandName} is ready`)
 }
-
 
 // Required parameters:
 // @raycast.schemaVersion 1
