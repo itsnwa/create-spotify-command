@@ -1,18 +1,18 @@
 #!/usr/bin/env node
 
-import fs from 'fs'
-import { execSync } from "child_process"
+import fs from "fs";
+import { execSync } from "child_process";
 
 // Get Clipboard contents
-const URL = execSync('pbpaste').toString()
+const URL = execSync("pbpaste").toString();
 
 // Filter out the information from URL
-const code = URL?.split('/')[4].split('?')[0]
-const type = URL?.split('/')[3]
+const code = URL?.split("/")[4].split("?")[0];
+const type = URL?.split("/")[3];
 
-console.log(`code: ${code}, type: ${type}`)
+console.log(`code: ${code}, type: ${type}`);
 
-const [commandName] = process.argv.slice(2)
+const [commandName] = process.argv.slice(2);
 
 // Create a new Spotify script
 const scriptContent = `#!/usr/bin/osascript
@@ -33,30 +33,34 @@ const scriptContent = `#!/usr/bin/osascript
 
 property uri: "spotify:${type}:${code}"
 
-tell application "Spotify" to play track uri`
+tell application "Spotify" to play track uri`;
 
 // Slugify
 const slugify = (string) => {
-    const a = 'àáâäæãåāăąçćčđďèéêëēėęěğǵḧîïíīįìłḿñńǹňôöòóœøōõőṕŕřßśšşșťțûüùúūǘůűųẃẍÿýžźż·/_,:;'
-    const b = 'aaaaaaaaaacccddeeeeeeeegghiiiiiilmnnnnoooooooooprrsssssttuuuuuuuuuwxyyzzz------'
-    const p = new RegExp(a.split('').join('|'), 'g')
+  const a =
+    "àáâäæãåāăąçćčđďèéêëēėęěğǵḧîïíīįìłḿñńǹňôöòóœøōõőṕŕřßśšşșťțûüùúūǘůűųẃẍÿýžźż·/_,:;";
+  const b =
+    "aaaaaaaaaacccddeeeeeeeegghiiiiiilmnnnnoooooooooprrsssssttuuuuuuuuuwxyyzzz------";
+  const p = new RegExp(a.split("").join("|"), "g");
 
-    return string.toString().toLowerCase()
-        .replace(/\s+/g, '-') // Replace spaces with -
-        .replace(p, c => b.charAt(a.indexOf(c))) // Replace special characters
-        .replace(/&/g, '-and-') // Replace & with 'and'
-        .replace(/[^\w\-]+/g, '') // Remove all non-word characters
-        .replace(/\-\-+/g, '-') // Replace multiple - with single -
-        .replace(/^-+/, '') // Trim - from start of text
-        .replace(/-+$/, '') // Trim - from end of text
-}
+  return string
+    .toString()
+    .toLowerCase()
+    .replace(/\s+/g, "-") // Replace spaces with -
+    .replace(p, (c) => b.charAt(a.indexOf(c))) // Replace special characters
+    .replace(/&/g, "-and-") // Replace & with 'and'
+    .replace(/[^\w\-]+/g, "") // Remove all non-word characters
+    .replace(/\-\-+/g, "-") // Replace multiple - with single -
+    .replace(/^-+/, "") // Trim - from start of text
+    .replace(/-+$/, ""); // Trim - from end of text
+};
 
 // Write script to disk
 if (!/track|album|playlist/.test(type)) {
-    console.log("Could not find Spotify URL in clipboard")
+  console.log("Could not find Spotify URL in clipboard");
 } else {
-    fs.writeFileSync(`./${slugify(commandName)}.applescript`, scriptContent)
-    console.log(`${commandName} is ready`)
+  fs.writeFileSync(`./${slugify(commandName)}.applescript`, scriptContent);
+  console.log(`${commandName} is ready`);
 }
 
 // Required parameters:
@@ -65,7 +69,7 @@ if (!/track|album|playlist/.test(type)) {
 // @raycast.mode silent
 
 // Optional parameters:
-// @raycast.icon ./assets/logo.png
+// @raycast.icon ./assets/create.png
 // @raycast.packageName Spotify
 // @raycast.argument1 { "type": "text", "placeholder": "Discover Weekly" }
 
